@@ -27,16 +27,16 @@ ifeq ($(show),true)
 endif
 
 
-radix_sort.o: radix_sort.cpp ThreadPool.h
+ParallelRadixSort.o: ParallelRadixSort.cpp ThreadPool.h
 	g++ -c -o $@ $^ $(CFLAGS) -lpthread
 
 
-test: radix_sort.cpp ThreadPool.h test.cpp
+test: ParallelRadixSort.cpp ThreadPool.h test.cpp
 	g++ -o $@ test.cpp $(CFLAGS) -lpthread
 
 
 clean: clean
-	rm -f test radix_sort.o
+	rm -f test ParallelRadixSort.o
 
 
-.PHONY: clean test radix_sort.o
+.PHONY: clean test ParallelRadixSort.o
