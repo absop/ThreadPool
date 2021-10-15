@@ -53,6 +53,7 @@ class ThreadPool {
     std::vector<std::thread> _threads;
     int _num_active_threads;
 
+    // 工作函数，运行于`工作线程`之中
     void worker();
 };
 
@@ -128,12 +129,12 @@ void ThreadPool::worker()
 
             _num_active_threads -= 1;
 
-            // 等待，直到有任务可执行，或者所有线程均已不再活跃（处于执行任务状态）
+            // 等待，直到有任务可执行，或者所有工作线程均以不再活跃
             _cv.wait(_lock, [this] {
                 return (!_q.empty() || _num_active_threads == 0);
             });
 
-            // 无任务可执行，且所有线程均不在运行中，不会有新的任务产生
+            // 无任务可执行，且所有工作线程均不在运行中，不会有新的任务产生
             if (_q.empty())
                 break;
 
