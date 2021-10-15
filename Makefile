@@ -1,42 +1,45 @@
 
-
-CFLAGS =
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall -lpthread
+OBJECTS = ParallelRadixSort.o ThreadPool.o
 
 ifdef d
-CFLAGS += -DDEBUG
+CXXFLAGS += -DDEBUG
 endif
 
 ifdef m
-	CFLAGS += -DMIN_SIZE=$(m)
+	CXXFLAGS += -DMIN_SIZE=$(m)
 endif
 
 ifdef n
-	CFLAGS += -DRAND_NUMBER=$(n)
+	CXXFLAGS += -DRAND_NUMBER=$(n)
 endif
 
 ifdef r
-	CFLAGS += -DRAND_RANGE=$(r)
+	CXXFLAGS += -DRAND_RANGE=$(r)
 endif
 
 ifdef t
-	CFLAGS += -DTHREADS=$(t)
+	CXXFLAGS += -DTHREADS=$(t)
 endif
 
 ifeq ($(show),true)
-	CFLAGS += -DPRINT_TEST
+	CXXFLAGS += -DPRINT_TEST
 endif
 
 
-ParallelRadixSort.o: ParallelRadixSort.cpp ThreadPool.h
-	g++ -c -o $@ $^ $(CFLAGS) -lpthread
+all: $(OBJECTS)
 
 
-test: ParallelRadixSort.cpp ThreadPool.h test.cpp
-	g++ -o $@ test.cpp $(CFLAGS) -lpthread
+$(OBJECTS): ThreadPool.h ParallelRadixSort.h ParallelRadixSort.cpp ThreadPool.cpp
 
 
-clean: clean
-	rm -f test ParallelRadixSort.o
+test: $(OBJECTS) test.cpp
+	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 
-.PHONY: clean test ParallelRadixSort.o
+clean:
+	rm -f test $(OBJECTS)
+
+
+.PHONY: clean

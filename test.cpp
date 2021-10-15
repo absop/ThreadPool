@@ -1,5 +1,7 @@
-#include "ParallelRadixSort.cpp"
+#include <random>
+#include <functional>
 
+#include "ParallelRadixSort.h"
 
 #ifndef RAND_RANGE
     #define RAND_RANGE 100000000
