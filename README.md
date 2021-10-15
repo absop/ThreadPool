@@ -23,7 +23,7 @@ C++线程池的简单实现
    ```cpp
    {
       pool = ThreadPool(4)
-      pool.add_task(...)
+      pool.submit(...)
    }
    ```
    在析构函数结束后，任务就完成了，因此，把`pool`的作用域利用起来

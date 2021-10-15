@@ -25,7 +25,7 @@ public:
     {
         size_t size = v.size();
         if (size > 1) {
-            add_task([this, &v, size]{
+            submit([this, &v, size]{
                 sort(&v, &v[0], &v[0] + size, 1, false);
             });
         }
@@ -76,7 +76,7 @@ private:
             v = bucket[i];
             if (v->size() > 0) {
                 end = begin + v->size();
-                add_task([=]{
+                submit([=]{
                     sort(v, begin, end, digit, true);
                 });
                 begin = end;

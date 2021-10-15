@@ -3,7 +3,6 @@
 #include <functional>
 #include <mutex>
 #include <queue>
-#include <string>
 #include <thread>
 #include <vector>
 
@@ -23,11 +22,11 @@ class ThreadPool {
     ThreadPool(size_t threads = 1);
     ~ThreadPool();
 
-    // add and copy
-    void add_task(const Task &t);
+    //  copy and submit the task
+    void submit(const Task &t);
 
-    // add and move
-    void add_task(Task &&t);
+    //  move and submit the task
+    void submit(Task &&t);
 
     // Deleted operations
     ThreadPool(const ThreadPool &rhs) = delete;
@@ -93,7 +92,7 @@ ThreadPool::~ThreadPool()
     }
 }
 
-void ThreadPool::add_task(const Task &s)
+void ThreadPool::submit(const Task &s)
 {
     debug("Thread %zu add new task\n", current_thread_id());
 
@@ -106,7 +105,7 @@ void ThreadPool::add_task(const Task &s)
 }
 
 
-void ThreadPool::add_task(Task &&s)
+void ThreadPool::submit(Task &&s)
 {
     debug("Thread %zu add new task\n", current_thread_id());
 
