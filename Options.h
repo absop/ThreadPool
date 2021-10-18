@@ -1,3 +1,7 @@
+/*
+ * Copyright (C) 2021 - 2022 absop (zlang0@163.com)
+ */
+
 #include <initializer_list>
 #include <iostream>
 #include <map>
