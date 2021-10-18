@@ -28,6 +28,13 @@ ThreadPool 是一个简单的C++**线程池**，用于支持动态并行任务�
    在析构函数结束后，任务就完成了，因此，把`pool`的作用域利用起来
 
 
+
+# Options
+[Options](https://github.com/absop/ThreadPool/blob/main/Options.h#L20)是一个300行代码实现的C++命令行参数解析器，它是一个类，以一组或一个**字符串**作为构造函数的输入，生成一个解析器，调用该解析器的`parse`成员函数，即可解析命令行参数，非常易用。
+
+`Options`的使用示例参考[test.cpp](https://github.com/absop/ThreadPool/blob/main/test.cpp#L10)
+
+
 # 并行基数排序
 
 ## 编译
