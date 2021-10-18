@@ -1,45 +1,40 @@
 
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -lpthread
-OBJECTS = ParallelRadixSort.o ThreadPool.o
+CXXFLAGS = -std=c++17 -Wall -lpthread
+HEADERS = Options.h ParallelRadixSort.h ThreadPool.h
 
 ifdef d
-CXXFLAGS += -DDEBUG
+	CXXFLAGS += -DDEBUG
 endif
 
 ifdef m
-	CXXFLAGS += -DMIN_SIZE=$(m)
+	CXXFLAGS += -DRADIX_SORT_MIN_SIZE=$(m)
 endif
 
-ifdef n
-	CXXFLAGS += -DRAND_NUMBER=$(n)
+ifdef top
+	CXXFLAGS += -DTEST_OPTION_PARSER
 endif
 
-ifdef r
-	CXXFLAGS += -DRAND_RANGE=$(r)
-endif
-
-ifdef t
-	CXXFLAGS += -DTHREADS=$(t)
-endif
-
-ifeq ($(show),true)
-	CXXFLAGS += -DPRINT_TEST
+ifeq ($(OS),Windows_NT)
+TEST_EXECUTABLE = test.exe
+test: $(TEST_EXECUTABLE)
+.PHONY: clean help test
+else
+TEST_EXECUTABLE = test
+.PHONY: clean help
 endif
 
 
-all: $(OBJECTS)
-
-
-$(OBJECTS): ThreadPool.h ParallelRadixSort.h ParallelRadixSort.cpp ThreadPool.cpp
-
-
-test: $(OBJECTS) test.cpp
-	$(CXX) -o $@ $^ $(CXXFLAGS)
+$(TEST_EXECUTABLE): test.cpp $(HEADERS)
+	$(CXX) -o $@ test.cpp $(CXXFLAGS)
 
 
 clean:
-	rm -f test $(OBJECTS)
+	rm -f $(TEST_EXECUTABLE)
 
 
-.PHONY: clean
+help:
+	@echo "make $(TEST_EXECUTABLE) [variables...]"
+	@echo "variables:"
+	@echo "  d=ANY      debug or not"
+	@echo "  m=INT      vector size threshold for radix sort"

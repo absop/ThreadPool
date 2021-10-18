@@ -1,47 +1,58 @@
-#include <random>
+#include <cstdio>
 #include <functional>
+#include <map>
+#include <random>
 
+#include "Options.h"
 #include "ParallelRadixSort.h"
 
-#ifndef RAND_RANGE
-    #define RAND_RANGE 100000000
-#endif
 
-#ifndef RAND_NUMBER
-    #define RAND_NUMBER 10000
-#endif
-
-#ifndef COLUMN
-    #define COLUMN 7
-#endif
-
-#ifndef THREADS
-    #define THREADS 4
-#endif
+static Options options = {
+    "Usage: test [options...]",
+    "Test program for the header `ParallelRadixSort.h`",
+    "",
+    "Options:",
+    "  -(c|-column) <column>      columns per line when printing",
+    "  -(n|-number) <number>      the number of random numbers",
+    "  -(r|-range) <lb> <ub>      the range of random numbers",
+    "  -(s|-show)                 print sorting result or not",
+    "  -(t|-threads) <threads>    number of threads to be used",
+    "  -(?|-help)                 print this message and exit",
+    "",
+    "Examples:",
+    "  ./test -t=4 --range 100 200",
+    "  ./test -t 2 --range 1 10000 -n=100000000",
+};
 
 
 int main(int argc, char *argv[])
 {
+    options.parse(argc, argv);
+
     std::default_random_engine generator;
-    std::uniform_int_distribution<unsigned int> distribution(1, RAND_RANGE);
+    std::uniform_int_distribution<unsigned int> distribution(
+        options.get("r", 0, 1), options.get("r", 1, 100000000));
     auto dice = std::bind(distribution, generator);
 
-    std::vector<unsigned int> v(RAND_NUMBER);
+    std::vector<unsigned int> v(options.get("n", 100));
     for (size_t i = 0; i < v.size(); ++i) {
         v[i] = dice();
     }
 
-    ParallelRadixSort(THREADS).sort(v);
+    ParallelRadixSort(options.get("-threads", 4)).sort(v);
 
-#ifdef PRINT_TEST
-    size_t count = 0;
-    for (size_t i = 0; i < v.size(); ++i) {
-        if (++count == COLUMN) {
-            printf("%-10u\n", v[i]);
-            count = 0;
-        } else {
-            printf("%-10u ", v[i]);
+    if (options.has("-show")) {
+        int count = 0;
+        for (size_t i = 0; i < v.size(); ++i) {
+            if (++count == options.get("-column", 7)) {
+                printf("%-10u\n", v[i]);
+                count = 0;
+            } else {
+                printf("%-10u ", v[i]);
+            }
+        }
+        if (count != 0) {
+            printf("\n");
         }
     }
-#endif
 }
