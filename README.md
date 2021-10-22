@@ -1,6 +1,7 @@
 # ThreadPool
 ThreadPool 是一个简单的C++**线程池**，用于支持动态并行任务。
 仓库链接： [ThreadPool](https://github.com/absop/ThreadPool)
+知乎文章： [C++实现线程池](https://zhuanlan.zhihu.com/p/416804003)
 
 
 ## 线程池的使用方法
