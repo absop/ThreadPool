@@ -12,7 +12,9 @@
 struct Option {
     bool is_given;
     unsigned int num_args;
+#ifdef TEST_OPTION_PARSER
     std::string pattern;
+#endif
     std::vector<std::string> values;
 };
 
@@ -52,7 +54,11 @@ class Options {
                 option_pattern.push_back('-');
                 option_pattern.append(name);
             }
-            Option option = { .pattern = option_pattern.substr(2) };
+            Option option = {
+#ifdef TEST_OPTION_PARSER
+                .pattern = option_pattern.substr(2)
+#endif
+            };
             for (auto & ph : parse_placeholders(line, i)) {
                 option_pattern.push_back(' ');
                 option_pattern.append(ph);

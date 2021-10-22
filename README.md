@@ -30,9 +30,104 @@ ThreadPool 是一个简单的C++**线程池**，用于支持动态并行任务�
 
 
 # Options
-[Options](https://github.com/absop/ThreadPool/blob/main/Options.h#L20)是一个300行代码实现的C++命令行参数解析器，它是一个类，以一组或一个**字符串**作为构造函数的输入，生成一个解析器，调用该解析器的`parse`成员函数，即可解析命令行参数，非常易用。
+[Options](https://github.com/absop/ThreadPool/blob/main/Options.h#L20)是一个300行代码实现的C++命令行参数解析器，其中包含一个结构体`Option`（表示一个选项）和一个类`Options`（解析器类）。
+
+`Options`以一组（或一个）**字符串**（帮助文档的模板）作为构造函数的输入，生成一个解析器，调用该解析器的`parse`成员函数，即可解析命令行参数，非常易用。
 
 `Options`的使用示例参考[test.cpp](https://github.com/absop/ThreadPool/blob/main/test.cpp#L10)
+
+## 接口（API）
+
+### 选项结构体
+```cpp
+struct Option {
+    bool is_given;         // 判断该选项是否在命令行参数中出现
+    unsigned int num_args; // 选项需要几个参数
+#ifdef TEST_OPTION_PARSER
+    std::string pattern;   // 选项的模板，用于调试解析器
+#endif
+    // 用于存储选项的参数的`vector`
+    std::vector<std::string> values;
+};
+```
+
+### Options（解析类）
+```cpp
+class Options {
+public:
+   // 构造函数
+   Options(const std::string &lines);
+   Options(const std::initializer_list<std::string> &lines);
+   Options(const std::vector<std::string> &lines);
+
+   // 解析
+   void parse(int argc, const char * const argv[]);
+   // 打印帮助信息
+   void show_usage();
+   // 参数
+   const std::vector<std::string> &args() const;
+   // 通过名字获取选项的结构体
+   const Option *operator[](const std::string &name);
+   // 获取选项的第一个值，返回字符串
+   const std::string &get(const std::string &name, const std::string &dval);
+   // 获取选项的第一个值，返回`int`
+   int get(const std::string &name, int dval);
+   // 获取选项的第`i`个值，返回字符串
+   const std::string &get(const std::string &name, size_t i, const std::string &dval);
+   // 获取选项的第`i`个值，返回`int`
+   int get(const std::string &name, size_t i, int dval);
+   // 判断选项`name`是否出现（用户是否输入）
+   bool has(const std::string &name);
+}
+```
+
+## 使用
+
+### 构造解析器
+```cpp
+static Options options = {
+    "Usage: test [options...]",
+    "Test program for the header `ParallelRadixSort.h`",
+    "",
+    "Options:",
+    "  -(c|-column) <column>      columns per line when printing",
+    "  -(n|-number) <number>      the number of random numbers",
+    "  -(r|-range) <lb> <ub>      the range of random numbers",
+    "  -(s|-show)                 print sorting result or not",
+    "  -(t|-threads) <threads>    number of threads to be used",
+    "  -(?|-help)                 print this message and exit",
+    "",
+    "Examples:",
+    "  ./test -t=4 --range 100 200",
+    "  ./test -t 2 --range 1 10000 -n=100000000",
+};
+```
+
+### 解析
+直接把`main`函数的参数传入`Options`对象的`parse`成员函数进行调用即可
+```cpp
+options.parse(argc, argv);
+```
+
+### 获取解析结果
+```cpp
+options.get(<option_name>, <default_value>)
+```
+其中 `<option_name>` 是帮助**模板**中选项的括号中给出的各项
+比如，如果帮助模板中存在如下一行
+```cpp
+"  -(c|-column) <column>      columns per line when printing"
+```
+则可使用
+```cpp
+options.get("-column", 4)
+```
+或
+```cpp
+options.get("c", 4)
+```
+获取`column`选项的值。
+
 
 
 # 并行基数排序
