@@ -28,7 +28,7 @@ ThreadPool 是一个简单的C++**线程池**，用于支持动态并行任务�
       pool.submit(...)
    }
    ```
-   在析构函数结束后，任务就完成了，因此，把`pool`的作用域利用起来
+   我们利用一下C++的RAII（Resource Acquisition Is initialization）技术，以避免手动等待线程池完成其任务。
 
 
 
