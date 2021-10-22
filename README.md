@@ -67,7 +67,7 @@ public:
    void parse(int argc, const char * const argv[]);
    // 打印帮助信息
    void show_usage();
-   // 参数
+   // 获取没有被选项捕获的参数
    const std::vector<std::string> &args() const;
    // 通过名字获取选项的结构体
    const Option *operator[](const std::string &name);
