@@ -118,7 +118,7 @@ class ThreadPool {
 
                 _num_active_threads -= 1;
 
-                // 等待，直到有任务可执行，或者所有工作线程均以不再活跃
+                // 等待，直到有任务可执行，或者所有工作线程均已不再活跃
                 _cv.wait(_lock, [this] {
                     return (!_q.empty() || _num_active_threads == 0);
                 });
